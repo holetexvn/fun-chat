@@ -25,6 +25,8 @@ export default function AuthProvider({ children }) {
         return;
       }
 
+      // reset user info
+      setUser({});
       setIsLoading(false);
       history.push('/login');
     });
@@ -37,7 +39,7 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user }}>
-      {isLoading ? <Spin /> : children}
+      {isLoading ? <Spin style={{ position: 'fixed', inset: 0 }} /> : children}
     </AuthContext.Provider>
   );
 }

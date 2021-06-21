@@ -4,7 +4,12 @@ import { AppContext } from '../../Context/AppProvider';
 import { debounce } from 'lodash';
 import { db } from '../../firebase/config';
 
-function DebounceSelect({ fetchOptions, debounceTimeout = 300, ...props }) {
+function DebounceSelect({
+  fetchOptions,
+  debounceTimeout = 300,
+  curMembers,
+  ...props
+}) {
   // Search: abcddassdfasdf
 
   const [fetching, setFetching] = useState(false);
@@ -15,14 +20,21 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 300, ...props }) {
       setOptions([]);
       setFetching(true);
 
-      fetchOptions(value, props.curMembers).then((newOptions) => {
+      fetchOptions(value, curMembers).then((newOptions) => {
         setOptions(newOptions);
         setFetching(false);
       });
     };
 
     return debounce(loadOptions, debounceTimeout);
-  }, [debounceTimeout, fetchOptions, props.curMembers]);
+  }, [debounceTimeout, fetchOptions, curMembers]);
+
+  React.useEffect(() => {
+    return () => {
+      // clear when unmount
+      setOptions([]);
+    };
+  }, []);
 
   return (
     <Select
@@ -47,7 +59,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 300, ...props }) {
 async function fetchUserList(search, curMembers) {
   return db
     .collection('users')
-    .where('keywords', 'array-contains', search)
+    .where('keywords', 'array-contains', search?.toLowerCase())
     .orderBy('displayName')
     .limit(20)
     .get()
@@ -75,6 +87,7 @@ export default function InviteMemberModal() {
   const handleOk = () => {
     // reset form value
     form.resetFields();
+    setValue([]);
 
     // update members in current room
     const roomRef = db.collection('rooms').doc(selectedRoomId);
@@ -89,6 +102,7 @@ export default function InviteMemberModal() {
   const handleCancel = () => {
     // reset form value
     form.resetFields();
+    setValue([]);
 
     setIsInviteMemberVisible(false);
   };
@@ -100,6 +114,7 @@ export default function InviteMemberModal() {
         visible={isInviteMemberVisible}
         onOk={handleOk}
         onCancel={handleCancel}
+        destroyOnClose={true}
       >
         <Form form={form} layout='vertical'>
           <DebounceSelect
