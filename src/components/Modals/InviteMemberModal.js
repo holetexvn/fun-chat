@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Form, Modal, Select, Spin, Avatar } from 'antd';
 import { AppContext } from '../../Context/AppProvider';
-import { AuthContext } from '../../Context/AuthProvider';
 import { debounce } from 'lodash';
 import { db } from '../../firebase/config';
 
@@ -23,7 +22,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 300, ...props }) {
     };
 
     return debounce(loadOptions, debounceTimeout);
-  }, [debounceTimeout, fetchOptions]);
+  }, [debounceTimeout, fetchOptions, props.curMembers]);
 
   return (
     <Select
@@ -70,9 +69,6 @@ export default function InviteMemberModal() {
     selectedRoomId,
     selectedRoom,
   } = useContext(AppContext);
-  const {
-    user: { uid },
-  } = useContext(AuthContext);
   const [value, setValue] = useState([]);
   const [form] = Form.useForm();
 

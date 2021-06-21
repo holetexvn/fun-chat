@@ -2,8 +2,6 @@ import React from 'react';
 import { Collapse, Typography, Button } from 'antd';
 import styled from 'styled-components';
 import { PlusSquareOutlined } from '@ant-design/icons';
-import useFirestore from '../../hooks/useFirestore';
-import { AuthContext } from '../../Context/AuthProvider';
 import { AppContext } from '../../Context/AppProvider';
 
 const { Panel } = Collapse;
