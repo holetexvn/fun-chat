@@ -1,5 +1,5 @@
 import { UserAddOutlined } from '@ant-design/icons';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Tooltip, Avatar, Form, Input, Alert } from 'antd';
 import Message from './Message';
@@ -78,6 +78,8 @@ export default function ChatWindow() {
   } = useContext(AuthContext);
   const [inputValue, setInputValue] = useState('');
   const [form] = Form.useForm();
+  const inputRef = useRef(null);
+  const messageListRef = useRef(null);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -93,6 +95,13 @@ export default function ChatWindow() {
     });
 
     form.resetFields(['message']);
+
+    // focus to input again after submit
+    if (inputRef?.current) {
+      setTimeout(() => {
+        inputRef.current.focus();
+      });
+    }
   };
 
   const condition = React.useMemo(
@@ -105,6 +114,14 @@ export default function ChatWindow() {
   );
 
   const messages = useFirestore('messages', condition);
+
+  useEffect(() => {
+    // scroll to bottom after message changed
+    if (messageListRef?.current) {
+      messageListRef.current.scrollTop =
+        messageListRef.current.scrollHeight + 50;
+    }
+  }, [messages]);
 
   return (
     <WrapperStyled>
@@ -139,7 +156,7 @@ export default function ChatWindow() {
             </ButtonGroupStyled>
           </HeaderStyled>
           <ContentStyled>
-            <MessageListStyled>
+            <MessageListStyled ref={messageListRef}>
               {messages.map((mes) => (
                 <Message
                   key={mes.id}
@@ -153,6 +170,7 @@ export default function ChatWindow() {
             <FormStyled form={form}>
               <Form.Item name='message'>
                 <Input
+                  ref={inputRef}
                   onChange={handleInputChange}
                   onPressEnter={handleOnSubmit}
                   placeholder='Nhập tin nhắn...'
