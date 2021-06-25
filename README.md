@@ -1,4 +1,4 @@
-Ứng dụng nhắn tin real-time bằng ReactJS và Firebase 2021
+# Ứng dụng nhắn tin real-time bằng ReactJS và Firebase 2021
 
 Youtube: [https://youtu.be/YZhNUU4_Pjw]
 
