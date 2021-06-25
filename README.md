@@ -1,3 +1,9 @@
+Ứng dụng nhắn tin real-time bằng ReactJS và Firebase 2021
+
+Youtube: [https://youtu.be/YZhNUU4_Pjw]
+
+Live Demo: [https://chat-app-c975a.firebaseapp.com/]
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
